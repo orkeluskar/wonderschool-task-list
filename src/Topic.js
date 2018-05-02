@@ -4,24 +4,29 @@ import Typography from 'material-ui/Typography';
 import Completed from './assets/Completed.svg';
 import Incomplete from './assets/Incomplete.svg';
 import Locked from './assets/Locked.svg';
+import {withRouter} from 'react-router-dom';
 
 class ToDoItem extends React.Component {
-    state={
+
+
+    state = {
         payload: [],
         taskGroups: {},
-        match: {},
+        match: '',
     }
 
-    async componentWillReceiveProps(){
-        await this.setState({
+     componentWillReceiveProps(){
+         this.setState({
             payload: this.props.payload,
             taskGroups: this.props.taskGroups,
-            match: this.props.match,
+            match: this.props.match.params.taskName,
         })
         console.log(this.state);
+        console.log(this.state.match)
         
     }
 
+  
     
   
     handleClick = async (id) => {
@@ -39,16 +44,17 @@ class ToDoItem extends React.Component {
                 payload: payload,
             })
         }
+        this.props.callbackFromParent(this.state.payload);
     }
 
     getIcon =  (id) => {
-        console.log(id)
+        //console.log(id)
         if ( id.dependencyIds.length > 0){
             let lock = false;
             let array = id.dependencyIds;
             if (array !== undefined){
                 array.forEach( (elem, index, array) => {
-                    console.log(elem)
+                    //console.log(elem)
                     if (elem in this.state.payload && this.state.payload[elem - 1].completedAt == null)
                         lock = true
                 })
@@ -70,17 +76,17 @@ class ToDoItem extends React.Component {
     }
 
     render() {
-        const { payload, taskGroups } = this.state;
+        const { match, location, history } = this.props
         return (
             <div>
                 <List>
-                {console.log(this.state)}
-                    {(this.props != null) ?
+                
+                    {(this.state.payload != null) ?
                         (
                             this.state.payload.map((i) => {
                                 
                                 if (this.state.taskGroups !== undefined){
-                                let group = this.state.taskGroups[this.state.match.params.taskName];
+                                const group = this.state.taskGroups[match.params.taskName];
                                 if (group !== undefined  && group.includes(i.id))
                                     return(
                                         <ListItem key={i.id} button value={i.id} onClick={() => this.handleClick(i.id)}>
@@ -89,7 +95,16 @@ class ToDoItem extends React.Component {
                                             }
                                             </ListItemIcon>
                                             <Typography variant="subheading">
-                                                {i.task}
+                                            {
+                                                (i.completedAt == null) ?
+                                                    (i.task)
+                                                    :
+                                                    (<div style={{textDecorationLine: 'line-through', textDecorationStyle: 'solid'}}>
+                                                        {i.task}
+                                                    </div>
+                                                    )
+                                            }
+                                                
                                             </Typography>
                                         
                                         </ListItem>
@@ -104,4 +119,4 @@ class ToDoItem extends React.Component {
     }
 }
 
-export default ToDoItem;
+export default withRouter(ToDoItem);

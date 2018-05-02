@@ -6,4 +6,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - git clone the repo
 - cd to the folder
 - ```npm install```
-- ```npm start````
+- ```npm start```

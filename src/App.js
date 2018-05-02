@@ -6,20 +6,20 @@ import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import List from 'material-ui/List';
-import { MenuItem } from 'material-ui/Menu';
+
 import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
+
 import Divider from 'material-ui/Divider';
 
 import Topic from './Topic';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { withRouter, BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 
 const GroupSvg = require('./Group.svg');
 
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const styles = theme => ({
   root: {
@@ -101,6 +101,13 @@ const styles = theme => ({
 });
 
 class PersistentDrawer extends React.Component {
+  
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  }
+
   state = {
     open: true,
     anchor: 'left',
@@ -189,32 +196,43 @@ class PersistentDrawer extends React.Component {
           else{
             taskGroups[key].push(i.id);
           }
+          return 0;
       });
       //console.log(taskGroups)
        await this.setState({
           taskGroups: taskGroups
     });
-    console.log(Object.keys(this.state.taskGroups));
+    //console.log(Object.keys(this.state.taskGroups));
   }
 
   componentDidMount(){  
       this.createTaskGroups();
   }
 
+  myCallback = (dataFromChild) => {
+    this.setState({
+      payload: dataFromChild,
+    })
+  }
+
+  check = (tasks) => {
+    let count = 0
+    tasks.forEach((elem, i, task) => {
+      if (this.state.payload[elem - 1].completedAt != null){
+        count += 1;
+      }
+    })
+    console.log(this.state.payload)
+    return count;
+  }
+
   render() {
     const { classes, theme } = this.props;
-    const { anchor, open, taskGroups } = this.state;
-
-   
-
-    let before = null;
-    let after = null;
-
-    
-
+    const { anchor, open } = this.state;
+    const { match, location, history } = this.props
     return (
-      <Router>
-      <span>
+      
+      
       <div className={classes.root}>
         
         <div className={classes.appFrame}>
@@ -252,23 +270,33 @@ class PersistentDrawer extends React.Component {
         <Divider />
     
       {/*loop here for list of groups*/}
-      {Object.keys(this.state.taskGroups).map((task, count) =>{
+      {Object.keys(this.state.taskGroups).map((task) =>{
         return(
-          <Link id={task} to={`/${task}`} >
-            <ListItem button>
-              <ListItemIcon>
-                <img src={GroupSvg} />
-              </ListItemIcon>
-              <Typography variant="subheading">
-                {task}
-                <br/>
-                <Typography variant="caption">
-                {this.state.taskGroups[task]}
-                </Typography>
-              </Typography>
+          
+          <NavLink value={task} id={task} to={`/${task}`} >
+          
+              <ListItem button >
+                
+                <ListItemIcon>
+                  <img alt="group-icon" src={GroupSvg} />
+                </ListItemIcon>
+                
+                  <ListItemText>
+                    <Typography variant="subheading">
+                    
+                      {task}
+                      
+                      <br/>
+                      <Typography variant="caption">
+                      {this.check(this.state.taskGroups[task])} OF {this.state.taskGroups[task].length} TASKS COMPLETE
+                      </Typography>
+                    </Typography>
+                  </ListItemText>
+                
+              </ListItem>
+          </NavLink>
             
-            </ListItem>
-          </Link>
+          
         )
       })}
    
@@ -286,17 +314,15 @@ class PersistentDrawer extends React.Component {
             })}
           >
             <div className={classes.drawerHeader} />
-            <Typography>
-              <Route path='/:taskName' render={(props) => <Topic {...props} payload={this.state.payload} taskGroups={this.state.taskGroups}/>} />
-            </Typography>
-          
+            
+              <Route exact path={'/:taskName'} render={(props) => <Topic taskGroup={location.pathname.slice(1, location.pathname.length)} {...props} payload={this.state.payload} taskGroups={this.state.taskGroups} callbackFromParent={this.myCallback}/>} />       
      
-      </main>
+        </main>
           
         </div>
       </div>
-      </span>
-      </Router>
+      
+      
     );
   }
 }
@@ -307,4 +333,4 @@ PersistentDrawer.propTypes = {
 };
 
 
-export default withStyles(styles, { withTheme: true })(PersistentDrawer);
+export default withStyles(styles, { withTheme: true })(withRouter(PersistentDrawer));
