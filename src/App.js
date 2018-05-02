@@ -225,14 +225,7 @@ class PersistentDrawer extends React.Component {
             })}
           >
             <Toolbar disableGutters={!open}>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerOpen}
-                className={classNames(classes.menuButton, open && classes.hide)}
-              >
-                <MenuIcon />
-              </IconButton>
+              
               <Typography variant="title" color="inherit" noWrap>
                 Wonderschool task list
               </Typography>
