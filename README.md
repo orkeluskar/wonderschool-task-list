@@ -10,4 +10,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 
 ## Sample Demo
-![Demo]((src/assets/task-list.mp4?raw=true "Demo"))
+![Demo](src/assets/task-list.gif?raw=true "Demo")
