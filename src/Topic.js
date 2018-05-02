@@ -12,20 +12,27 @@ class ToDoItem extends React.Component {
     state = {
         payload: [],
         taskGroups: {},
-        match: '',
-    }
-
-     componentWillReceiveProps(){
-         this.setState({
-            payload: this.props.payload,
-            taskGroups: this.props.taskGroups,
-            match: this.props.match.params.taskName,
-        })
-        console.log(this.state);
-        console.log(this.state.match)
         
     }
 
+    async componentWillReceiveProps(){
+        await this.setState({
+            payload: this.props.payload,
+            taskGroups: this.props.taskGroups,
+            
+        })
+        console.log(this.state);
+        
+        
+    }
+
+    async componentDidMount(){
+        await this.setState({
+           payload: this.props.payload,
+           taskGroups: this.props.taskGroups,
+           
+       })
+    }
   
     
   

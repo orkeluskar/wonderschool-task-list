@@ -102,11 +102,7 @@ const styles = theme => ({
 
 class PersistentDrawer extends React.Component {
   
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  }
+  
 
   state = {
     open: true,
@@ -229,7 +225,7 @@ class PersistentDrawer extends React.Component {
   render() {
     const { classes, theme } = this.props;
     const { anchor, open } = this.state;
-    const { match, location, history } = this.props
+    
     return (
       
       
@@ -315,7 +311,7 @@ class PersistentDrawer extends React.Component {
           >
             <div className={classes.drawerHeader} />
             
-              <Route exact path={'/:taskName'} render={(props) => <Topic taskGroup={location.pathname.slice(1, location.pathname.length)} {...props} payload={this.state.payload} taskGroups={this.state.taskGroups} callbackFromParent={this.myCallback}/>} />       
+              <Route exact path={'/:taskName'} render={(props) => <Topic  {...props} payload={this.state.payload} taskGroups={this.state.taskGroups} callbackFromParent={this.myCallback}/>} />       
      
         </main>
           
