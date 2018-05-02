@@ -38,7 +38,13 @@ class ToDoItem extends React.Component {
   
     handleClick = async (id) => {
         //console.log(id);
+       
         let payload = this.state.payload;
+
+        if ( this.isLocked(payload[id - 1]) ){
+            return ;
+        }
+
         if (payload[id - 1].completedAt == null){
             payload[id - 1].completedAt = new Date();
             await this.setState({
@@ -52,6 +58,23 @@ class ToDoItem extends React.Component {
             })
         }
         this.props.callbackFromParent(this.state.payload);
+    }
+
+    isLocked = (id) => {
+        if ( id.dependencyIds.length > 0){
+            let lock = false;
+            let array = id.dependencyIds;
+            if (array !== undefined){
+                array.forEach( (elem, index, array) => {
+                    //console.log(elem)
+                    if (elem in this.state.payload && this.state.payload[elem - 1].completedAt == null)
+                        lock = true
+                })
+            }
+            if (lock){
+                return true;
+            }
+        }
     }
 
     getIcon =  (id) => {
