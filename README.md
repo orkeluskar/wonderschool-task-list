@@ -7,3 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - cd to the folder
 - ```npm install```
 - ```npm start```
+
+
+## Sample Demo
+![Demo]((src/assets/task-list.mp4?raw=true "Demo"))
